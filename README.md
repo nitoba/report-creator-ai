@@ -1,5 +1,5 @@
 <div align='center'>
-	<h1>📍 Report Creator AI</h1>
+	<h1>Report Creator AI</h1>
 	<img src='https://img.shields.io/github/languages/top/nitoba/report-creator-ai' alt='Linguagem mais utilizada' />
 	<img src='https://img.shields.io/github/last-commit/nitoba/report-creator-ai' alt='Último commit' />
 </div>
