@@ -15,9 +15,16 @@ test = 'pytest -s -x --cov=linkfy -vv'
 post_test = 'coverage html'
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "3.12.*"
 
 
+crewai = {extras = ["tools"], version = "^0.30.11"}
+pydantic-settings = "^2.3.1"
+pydrive2 = "^1.19.0"
+google-api-python-client = "^2.132.0"
+google-auth = "^2.30.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
@@ -31,7 +38,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.ruff]
-line-length = 79
+line-length = 90
 extend-exclude = ['migrations']
 
 [tool.ruff.lint]
