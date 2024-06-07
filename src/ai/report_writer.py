@@ -38,7 +38,9 @@ writer = Task(
     ---
 
     Retorne o conteúdo gerado em português do Brasil se atentando para erros de grámatica.
-    Se a linha do texto passar de 90 caracteres deve ser quebrada para próxima
+    Se a linha do texto passar de 90 caracteres deve ser quebrada para próxima.
+    Sempre que houver o nome 'Bruno' pode tratar como primeira pessoa, pois é quem deve ser
+    referenciado como dono do relatório.
 
     O Tom e o estilo do texto devem ser:
         - Mantenha um tom profissional e objetivo.
