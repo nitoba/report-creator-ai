@@ -9,7 +9,6 @@ readme = "README.md"
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
 dev = 'python3 src/app.py'
-migrate-up = 'alembic upgrade head'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=linkfy -vv'
 post_test = 'coverage html'
@@ -18,9 +17,8 @@ post_test = 'coverage html'
 python = "3.12.*"
 
 
-crewai = {extras = ["tools"], version = "^0.30.11"}
+crewai = { extras = ["tools"], version = "^0.30.11" }
 pydantic-settings = "^2.3.1"
-pydrive2 = "^1.19.0"
 google-api-python-client = "^2.132.0"
 google-auth = "^2.30.0"
 google-auth-httplib2 = "^0.2.0"
