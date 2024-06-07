@@ -2,12 +2,10 @@ import io
 from os import path
 
 from contracts.uploader import IUploader
-from env import Env
+from env import env
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
-
-env = Env()
 
 SERVICE_ACCOUNT_FILE = path.dirname(__file__) + '/../../credentials.json'
 
@@ -19,7 +17,7 @@ class GoogleDriveRepository(IUploader):
         credentials = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES
         )
-        self.service = build('drive', 'v3', credentials=credentials)
+        self.client = build('drive', 'v3', credentials=credentials)
 
     @classmethod
     def upload(self, content: str, filename: str):
@@ -30,7 +28,7 @@ class GoogleDriveRepository(IUploader):
 
         media = MediaIoBaseUpload(content_io, mimetype='text/plain', resumable=True)
         file = (
-            self.service.files()
+            self.client.files()
             .create(body=file_metadata, media_body=media, fields='id')
             .execute()
         )

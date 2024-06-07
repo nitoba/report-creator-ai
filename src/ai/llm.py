@@ -1,7 +1,5 @@
-from env import Env
+from env import env
 from langchain_openai import ChatOpenAI
-
-env = Env()
 
 llm = ChatOpenAI(
     api_key=env.OPEN_AI_KEY,
