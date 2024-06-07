@@ -1,17 +1,5 @@
-from crewai import Agent, Task
-from llm import llm
-
-report_writer = Agent(
-    role='Redigente de Relatórios',
-    goal="""Escrever relatorios semanais de forma eficiente com base nos dados que serão fornecidos pelo usuário.""",
-    backstory="""
-    Você é o melhor redigente de relatórios do mundo e foi
-    contratado para escrever relatorios semanais de forma eficiente.""",
-    verbose=True,
-    allow_delegation=False,
-    llm=llm,
-    function_calling_llm=llm,
-)
+from ai.agent import report_writer
+from crewai import Task
 
 writer = Task(
     description="""Use os dados fornecidos pelo usuário para escrever um relatório semanal.

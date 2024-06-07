@@ -9,13 +9,9 @@ from googleapiclient.http import MediaIoBaseUpload
 
 env = Env()
 
-# Caminho para o arquivo de credenciais JSON da conta de serviço
-SERVICE_ACCOUNT_FILE = path.dirname(__file__) + '/../credentials.json'
+SERVICE_ACCOUNT_FILE = path.dirname(__file__) + '/../../credentials.json'
 
-# Definindo escopos de acesso
 SCOPES = ['https://www.googleapis.com/auth/drive']
-
-# Autenticação com a conta de serviço
 
 
 class GoogleDriveRepository(IUploader):

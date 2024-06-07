@@ -2,14 +2,14 @@ import sys
 
 from contracts.content_handler import IContentHandler
 from contracts.uploader import IUploader
-from use_cases.report_generator import ReportGenerator
+from use_cases.report_generator import ReportGeneratorUseCase
 
 
 class ReportCreatorUseCase:
     def __init__(
         self,
         content_handler: IContentHandler,
-        report_generator: ReportGenerator,
+        report_generator: ReportGeneratorUseCase,
         uploader: IUploader,
     ):
         self.content_handler = content_handler
@@ -21,7 +21,7 @@ class ReportCreatorUseCase:
         response = input(message).strip().lower()
         return response == 'y'
 
-    def generate_and_upload_report(self, report: str):
+    def execute(self, report: str):
         first_time = True
         while True:
             message = (
@@ -32,7 +32,7 @@ class ReportCreatorUseCase:
             if not self.confirm_action(message):
                 sys.exit()
 
-            report_generated = self.report_generator.generate_report(report)
+            report_generated = self.report_generator.execute(report)
             print('######################')
             print(report_generated)
 
