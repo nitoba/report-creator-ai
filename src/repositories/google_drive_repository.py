@@ -7,19 +7,18 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 
-SERVICE_ACCOUNT_FILE = path.dirname(__file__) + '/../../credentials.json'
+SERVICE_ACCOUNT_FILE = f'{path.dirname(__file__)}/../../credentials.json'
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES
+)
 
 
 class GoogleDriveRepository(IUploader):
     def __init__(self) -> None:
-        credentials = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE, scopes=SCOPES
-        )
         self.client = build('drive', 'v3', credentials=credentials)
 
-    @classmethod
     def upload(self, content: str, filename: str):
         file_metadata = {'name': filename}
         file_metadata['parents'] = env.DRIVE_FOLDER_ID

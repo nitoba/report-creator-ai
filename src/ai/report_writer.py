@@ -38,7 +38,7 @@ writer = Task(
     ---
 
     Retorne o conteúdo gerado em português do Brasil se atentando para erros de grámatica.
-    Se a linha do texto passar 90 caracteres por linha deve ser quebrado para próxima
+    Se a linha do texto passar de 90 caracteres deve ser quebrada para próxima
 
     O Tom e o estilo do texto devem ser:
         - Mantenha um tom profissional e objetivo.
