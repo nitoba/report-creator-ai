@@ -13,6 +13,8 @@ class Env(BaseSettings):
     EMBEDDING_MODEL: str
     REDIS_URL: str
     DRIVE_FOLDER_ID: str
+    DISCORD_CHANNEL_ID: str
+    DISCORD_TOKEN: str
 
 
 env = Env()
