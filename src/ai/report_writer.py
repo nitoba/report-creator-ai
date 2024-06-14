@@ -11,7 +11,7 @@ writer = Task(
         5. Observações adicionais se houver.
 
     Formato:
-        Reporte Semanal IBS - (Data do primeiro registro) a (Data do ultimo registro)
+        Reporte Semanal IBS - (Data do primeiro registro começando com Standup) à (Data do útilmo registro começando com Standup)
 
         1. Resumo das Atividades da Semana:
         - Descreva brevemente as atividades realizadas durante a semana.
@@ -41,6 +41,10 @@ writer = Task(
     Se a linha do texto passar de 90 caracteres deve ser quebrada para próxima.
     Sempre que houver o nome 'Bruno' pode tratar como primeira pessoa, pois é quem deve ser
     referenciado como dono do relatório.
+    Um novo registro a partir dos dados fornecidos sempre comecam com: Standup (DD/MM/YYYY),
+    considere essa parte como data em que o registro foi criado para mostrar a data do título
+    do relatório. Observe que o nome Standup não é incluso como data, apenas use como referência
+    para conseguir se localizar as datas em que os registro foram criados.
 
     O Tom e o estilo do texto devem ser:
         - Mantenha um tom profissional e objetivo.

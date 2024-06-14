@@ -13,7 +13,7 @@ class DiscordRepository(IContentHandler):
         result = ''
         response = api.get(
             f'{self.base_url}/{env.DISCORD_CHANNEL_ID}/messages',
-            params={'limit': 7},
+            params={'limit': 5},
             headers={
                 'Authorization': f'Bot {env.DISCORD_TOKEN}',
                 'Content-Type': 'application/json',
@@ -22,6 +22,7 @@ class DiscordRepository(IContentHandler):
 
         if response.status_code == HTTPStatus.OK:
             messages = response.json()
+            messages.reverse()
             for message in messages:
                 result += f'{message['content']}\n'
 
