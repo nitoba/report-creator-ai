@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from crewai import Crew
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.ai.agent import report_writer
@@ -16,6 +17,21 @@ from src.use_cases.report_creator_api import ReportCreatorUseCase
 from src.use_cases.report_generator import ReportGeneratorUseCase
 
 app = FastAPI()
+
+app = FastAPI()
+
+origins = [
+    'http://localhost',
+    'http://localhost:3000',
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 content_repository = DiscordRepository()
 uploader_repository = GoogleDriveRepository()
@@ -34,7 +50,10 @@ report_creator = ReportCreatorUseCase(
 def generate_report():
     content = content_repository.get_content()
     response = report_creator.execute(content)
-    return {'report': response.raw}
+    return JSONResponse(
+        status_code=HTTPStatus.CREATED,
+        content={'report': response.raw},
+    )
 
 
 @app.post(
