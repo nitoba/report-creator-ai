@@ -9,6 +9,7 @@ readme = "README.md"
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
 dev = 'python3 src/app.py'
+api = 'fastapi dev src/http/app.py --host 0.0.0.0'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=linkfy -vv'
 post_test = 'coverage html'

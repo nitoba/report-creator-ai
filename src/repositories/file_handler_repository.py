@@ -1,6 +1,6 @@
 from os import path
 
-from contracts.content_handler import IContentHandler
+from src.contracts.content_handler import IContentHandler
 
 
 class FileHandlerRepository(IContentHandler):

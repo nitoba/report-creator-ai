@@ -2,7 +2,7 @@ import sys
 
 from contracts.content_handler import IContentHandler
 from contracts.uploader import IUploader
-from use_cases.report_generator import ReportGeneratorUseCase
+from use_cases.report_creator_cli import ReportGeneratorUseCase
 
 
 class ReportCreatorUseCase:

@@ -1,11 +1,12 @@
 import io
 from os import path
 
-from contracts.uploader import IUploader
-from env import env
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
+
+from src.contracts.uploader import IUploader
+from src.env import env
 
 SERVICE_ACCOUNT_FILE = f'{path.dirname(__file__)}/../../credentials.json'
 
@@ -38,5 +39,7 @@ class GoogleDriveRepository(IUploader):
             print(
                 f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
             )
+            return f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
         except Exception as err:
             print(err)
+            raise err

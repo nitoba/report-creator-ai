@@ -1,5 +1,6 @@
-from ai.agent import report_writer
 from crewai import Task
+
+from src.ai.agent import report_writer
 
 writer = Task(
     description="""Use os dados fornecidos pelo usuário para escrever um relatório semanal.

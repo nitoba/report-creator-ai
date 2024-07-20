@@ -5,8 +5,9 @@ from ai.report_writer import writer
 from crewai import Crew
 from repositories.discord_repository import DiscordRepository
 from repositories.google_drive_repository import GoogleDriveRepository
-from use_cases.report_creator import ReportCreatorUseCase
 from use_cases.report_generator import ReportGeneratorUseCase
+
+from src.use_cases.report_creator_cli import ReportCreatorUseCase
 
 if __name__ == '__main__':
     print('Bem-vindo ao Report Creator AI')

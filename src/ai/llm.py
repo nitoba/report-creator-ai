@@ -1,5 +1,6 @@
-from env import env
 from langchain_ollama import ChatOllama
+
+from src.env import env
 
 llm = ChatOllama(
     model=env.CHAT_MODEL,

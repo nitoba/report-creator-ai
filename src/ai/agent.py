@@ -1,5 +1,6 @@
-from ai.llm import llm
 from crewai import Agent
+
+from src.ai.llm import llm
 
 report_writer = Agent(
     role='Redigente de Relatórios',
