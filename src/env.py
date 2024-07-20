@@ -10,6 +10,7 @@ class Env(BaseSettings):
     OPEN_AI_KEY: str
     OPEN_AI_BASE_URL: str
     CHAT_MODEL: str
+    EMBEDDING_MODEL: str
     DRIVE_FOLDER_ID: str
     DISCORD_CHANNEL_ID: str
     DISCORD_TOKEN: str
