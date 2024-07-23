@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from src.ai.agent import ReportCreatorAgent
 from src.http.dtos.generate_report_response import GenerateReportResponse
@@ -12,7 +12,10 @@ from src.http.dtos.upload_report_response import UploadReportResponse
 from src.repositories.discord_repository import DiscordRepository
 from src.repositories.google_drive_repository import GoogleDriveRepository
 from src.use_cases.report_creator_api import ReportCreatorUseCase
-from src.use_cases.report_generator import ReportGeneratorUseCase
+from src.use_cases.report_generator import (
+    ReportGeneratorStreamUseCase,
+    ReportGeneratorUseCase,
+)
 
 app = FastAPI()
 
@@ -35,6 +38,7 @@ content_repository = DiscordRepository()
 uploader_repository = GoogleDriveRepository()
 agent = ReportCreatorAgent()
 report_generator = ReportGeneratorUseCase(agent)
+report_generator_stream = ReportGeneratorStreamUseCase(agent)
 report_creator = ReportCreatorUseCase(
     content_repository, report_generator, uploader_repository
 )
@@ -58,6 +62,25 @@ def generate_report():
     return JSONResponse(
         status_code=HTTPStatus.CREATED,
         content={'report': response},
+    )
+
+
+@app.get(
+    '/generate-report-stream',
+    status_code=HTTPStatus.CREATED,
+)
+def generate_report_stream():
+    print('Generating report...')
+    content = content_repository.get_content()
+    response = report_creator.execute(content)
+    if not response:
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST,
+            content={'message': 'Error generating report'},
+        )
+
+    return StreamingResponse(
+        report_generator_stream.execute(response), media_type='text/plain'
     )
 
 
