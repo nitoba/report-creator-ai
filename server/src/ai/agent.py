@@ -1,15 +1,13 @@
-from crewai import Agent
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.output_parser import StrOutputParser
 
 from src.ai.llm import llm
+from src.ai.template import template_instructions
 
-report_writer = Agent(
-    role='Redigente de Relatórios',
-    goal="""Escrever relatorios semanais de forma eficiente com base nos dados que serão fornecidos pelo usuário.""",
-    backstory="""
-    Você é o melhor redigente de relatórios do mundo e foi
-    contratado para escrever relatorios semanais de forma eficiente.""",
-    verbose=True,
-    allow_delegation=False,
-    llm=llm,
-    function_calling_llm=llm,
-)
+
+class ReportCreatorAgent:
+    def run(self, report_data: str):
+        prompt_template = ChatPromptTemplate.from_template(template_instructions)
+        chain = prompt_template | llm | StrOutputParser()
+
+        return chain.invoke({'report': report_data})

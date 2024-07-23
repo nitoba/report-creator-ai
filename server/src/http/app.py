@@ -1,12 +1,10 @@
 from http import HTTPStatus
 
-from crewai import Crew
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.ai.agent import report_writer
-from src.ai.report_writer import writer
+from src.ai.agent import ReportCreatorAgent
 from src.http.dtos.generate_report_response import GenerateReportResponse
 from src.http.dtos.response import Message
 from src.http.dtos.upload_report_request import UploadReportRequest
@@ -35,8 +33,8 @@ app.add_middleware(
 
 content_repository = DiscordRepository()
 uploader_repository = GoogleDriveRepository()
-crew = Crew(agents=[report_writer], tasks=[writer], verbose=2)
-report_generator = ReportGeneratorUseCase(crew)
+agent = ReportCreatorAgent()
+report_generator = ReportGeneratorUseCase(agent)
 report_creator = ReportCreatorUseCase(
     content_repository, report_generator, uploader_repository
 )
@@ -48,11 +46,18 @@ report_creator = ReportCreatorUseCase(
     response_model=GenerateReportResponse,
 )
 def generate_report():
+    print('Generating report...')
     content = content_repository.get_content()
     response = report_creator.execute(content)
+    if not response:
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST,
+            content={'message': 'Error generating report'},
+        )
+
     return JSONResponse(
         status_code=HTTPStatus.CREATED,
-        content={'report': response.raw},
+        content={'report': response},
     )
 
 

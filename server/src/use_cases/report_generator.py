@@ -1,9 +1,9 @@
-from crewai import Crew
+from src.ai.agent import ReportCreatorAgent
 
 
 class ReportGeneratorUseCase:
-    def __init__(self, crew: Crew):
-        self.crew = crew
+    def __init__(self, agent: ReportCreatorAgent):
+        self.agent = agent
 
     def execute(self, report: str) -> str:
-        return self.crew.kickoff(inputs={'report': report})
+        return self.agent.run(report)
