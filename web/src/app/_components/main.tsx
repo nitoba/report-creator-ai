@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Button } from './ui/button'
-import { generateReportAction } from '../_actions/generate-report-action'
 import { useServerAction } from 'zsa-react'
 import { ContentMarkdown } from './markdown'
 import { Loader2 } from 'lucide-react'
@@ -11,21 +10,23 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { uploadReportAction } from '../_actions/upload-report-action'
 import { toast } from 'sonner'
+import { useReportStreaming } from '../_hooks/useReportStreaming'
 
 export function Main() {
-  const titleInputRef = React.useRef<HTMLInputElement>(null)
   const {
-    data: report,
-    reset: resetReport,
-    isPending: isGeneratingReport,
-    execute: handleGenerateReport,
-  } = useServerAction(generateReportAction)
+    finishedStreaming,
+    handleAbortReportCreation,
+    handleGenerateReport,
+    handleReset,
+    isGeneratingReport,
+    streamedContent,
+    titleInputRef,
+  } = useReportStreaming()
 
   const { isPending: isUploadingReport, execute: handleUploadReport } =
     useServerAction(uploadReportAction, {
       onSuccess: (result) => {
         toast.success(result.data.message)
-        resetReport()
         titleInputRef.current!.value = ''
       },
 
@@ -35,12 +36,7 @@ export function Main() {
       },
     })
 
-  const isReportGenerated = !!report
-
-  function handleAbortReportCreation() {
-    resetReport()
-    titleInputRef.current!.value = ''
-  }
+  const isStreamingData = streamedContent !== ''
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -51,7 +47,7 @@ export function Main() {
         className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
         x-chunk="dashboard-02-chunk-1"
       >
-        {!isReportGenerated && (
+        {!isStreamingData && (
           <div
             className={cn('flex flex-col items-center gap-1 text-center', {
               'animate-pulse': isGeneratingReport,
@@ -76,7 +72,7 @@ export function Main() {
           </div>
         )}
 
-        {isReportGenerated && (
+        {isStreamingData && (
           <div className="px-4 max-w-4xl w-full flex flex-col gap-6 h-full justify-center items-center py-10 animate-in fade-in-0 duration-300">
             <Label className="w-full space-y-2">
               <span className="text-sm">Report Title</span>
@@ -86,47 +82,54 @@ export function Main() {
                 disabled={isUploadingReport}
               />
             </Label>
-            <ContentMarkdown content={report} />
+            <ContentMarkdown content={streamedContent} />
             <div className="space-y-4 mt-auto w-full">
               <div className="w-full gap-2 flex">
                 <Button
                   variant="secondary"
                   className="w-full"
-                  disabled={isUploadingReport}
+                  disabled={isUploadingReport || !finishedStreaming}
                   onClick={() => {
-                    resetReport()
-                    titleInputRef.current!.value = ''
                     handleGenerateReport()
                   }}
                 >
                   Generate again
                 </Button>
+                {finishedStreaming && (
+                  <Button
+                    className="w-full"
+                    disabled={isUploadingReport}
+                    onClick={() => {
+                      handleUploadReport({
+                        title: titleInputRef.current!.value,
+                        content: streamedContent,
+                      })
+                    }}
+                  >
+                    Upload Report
+                  </Button>
+                )}
+              </div>
+
+              {!finishedStreaming ? (
                 <Button
+                  variant="destructive"
                   className="w-full"
                   disabled={isUploadingReport}
-                  onClick={() => {
-                    handleUploadReport({
-                      content: report,
-                      ...(titleInputRef.current?.value && {
-                        title: titleInputRef.current.value.trim(),
-                      }),
-                    })
-                  }}
+                  onClick={handleAbortReportCreation}
                 >
-                  Upload Report
-                  {isUploadingReport && (
-                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                  )}
+                  Abort Report Generation
                 </Button>
-              </div>
-              <Button
-                variant="destructive"
-                className="w-full"
-                disabled={isUploadingReport}
-                onClick={handleAbortReportCreation}
-              >
-                Abort Report
-              </Button>
+              ) : (
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  disabled={isUploadingReport || !finishedStreaming}
+                  onClick={handleReset}
+                >
+                  Cancel
+                </Button>
+              )}
             </div>
           </div>
         )}

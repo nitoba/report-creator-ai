@@ -19,4 +19,5 @@ class ReportGeneratorStreamUseCase:
         response = self.agent.run_as_stream(report)
 
         for chunk in response:
+            print(chunk, end='', flush=True)
             yield chunk
