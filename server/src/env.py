@@ -28,5 +28,7 @@ class Env(BaseSettings):
     GOOGLE_AUTH_PROVIDER_X509_CERT_URL: str
     GOOGLE_CLIENT_X509_CERT_URL: str
 
+    DATABASE_URL: str
+
 
 env = Env()
