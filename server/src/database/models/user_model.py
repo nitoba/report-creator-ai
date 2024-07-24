@@ -8,7 +8,7 @@ from src.database.models.base import Base
 
 class UserModel(Base):
     __tablename__ = 'users'
-    id = Column(String, primary_key=True, default=str(uuid.uuid4))
+    id = Column(String, primary_key=True, default=str(uuid.uuid4()))
     username = Column(String, unique=True)
     email = Column(String, unique=True)
     password = Column(String)
