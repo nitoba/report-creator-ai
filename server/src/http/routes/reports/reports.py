@@ -6,10 +6,12 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from src.ai.agent import ReportCreatorAgent
 from src.database.repositories.discord_repository import DiscordRepository
 from src.database.repositories.google_drive_repository import GoogleDriveRepository
+from src.database.repositories.report_repository import ReportRepository
 from src.http.common.dtos.response import Message
 from src.http.routes.reports.dtos.generate_report_response import GenerateReportResponse
 from src.http.routes.reports.dtos.upload_report_request import UploadReportRequest
 from src.http.routes.reports.dtos.upload_report_response import UploadReportResponse
+from src.use_cases.fetch_reports_from_user import FetchReportsFromUserUseCase
 from src.use_cases.report_creator_api import ReportCreatorUseCase
 from src.use_cases.report_generator import (
     ReportGeneratorStreamUseCase,
@@ -21,12 +23,14 @@ router = APIRouter(prefix='/reports', tags=['reports'])
 
 content_repository = DiscordRepository()
 uploader_repository = GoogleDriveRepository()
+report_repository = ReportRepository()
 agent = ReportCreatorAgent()
 report_generator = ReportGeneratorUseCase(agent)
 report_generator_stream = ReportGeneratorStreamUseCase(agent)
 report_creator = ReportCreatorUseCase(
     content_repository, report_generator, uploader_repository
 )
+fetch_reports_from_user_use_case = FetchReportsFromUserUseCase(report_repository)
 
 
 @router.post(
@@ -92,3 +96,12 @@ def upload_report(body: UploadReportRequest):
             status_code=HTTPStatus.BAD_REQUEST,
             content={'message': f'Error uploading report: {err}'},
         )
+
+
+@router.get(
+    '/{user_id}',
+    status_code=HTTPStatus.OK,
+    response_model=list,
+)
+def fetch_reports_from_user(user_id: str):
+    return fetch_reports_from_user_use_case.execute(user_id)

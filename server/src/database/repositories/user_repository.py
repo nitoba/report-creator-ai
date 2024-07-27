@@ -1,6 +1,5 @@
-from server.src.database.models import UserModel
-
 from src.database.connection import get_db
+from src.database.models import UserModel
 
 
 class UserRepository:

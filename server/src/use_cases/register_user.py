@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 from src.cryptography.argon2_hasher import Argon2Hasher
-from src.database.models.user_model import UserModel
+from src.database.models import UserModel
 from src.database.repositories.user_repository import UserRepository
 
 
