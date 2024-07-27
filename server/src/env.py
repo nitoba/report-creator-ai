@@ -29,6 +29,7 @@ class Env(BaseSettings):
     GOOGLE_CLIENT_X509_CERT_URL: str
 
     DATABASE_URL: str
+    JWT_SECRET: str
 
 
 env = Env()
