@@ -18,18 +18,30 @@ import {
   FormLabel,
   FormMessage,
 } from '@/app/_components/ui/form'
+import { useServerAction } from 'zsa-react'
+import { registerUserAction } from '@/app/_actions/register-user-action'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const { replace } = useRouter()
+  const { execute, isPending } = useServerAction(registerUserAction, {
+    onError: (error) => {
+      toast.error(error.err.data)
+    },
+    onSuccess: () => {
+      toast.success('Account created successfully')
+      replace('/sign-in')
+    },
+  })
   const form = useForm<RegisterUserBody>({
     resolver: zodResolver(registerUserSchema),
   })
 
   function onSubmit(values: RegisterUserBody) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    execute(values)
   }
   return (
     <div
@@ -92,10 +104,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </FormItem>
             )}
           />
-          <Button>
-            {form.formState.isSubmitting && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
+          <Button type="submit">
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign Up
           </Button>
         </form>

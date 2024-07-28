@@ -19,18 +19,31 @@ import {
   AuthenticateUserBody,
   authenticateUserSchema,
 } from '@/shared/dtos/authenticate-user-schema'
+import { useServerAction } from 'zsa-react'
+import { useRouter } from 'next/navigation'
+import { authenticateUserAction } from '@/app/_actions/authenticate-user-action'
+import { toast } from 'sonner'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const { replace } = useRouter()
+  const { execute, isPending } = useServerAction(authenticateUserAction, {
+    onError: (error) => {
+      toast.error(error.err.data)
+    },
+    onSuccess: (result) => {
+      localStorage.setItem('access_token', result.data.access_token)
+      toast.success('Account authenticated successfully')
+      replace('/')
+    },
+  })
   const form = useForm<AuthenticateUserBody>({
     resolver: zodResolver(authenticateUserSchema),
   })
 
   function onSubmit(values: AuthenticateUserBody) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    execute(values)
   }
   return (
     <div
@@ -80,10 +93,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </FormItem>
             )}
           />
-          <Button>
-            {form.formState.isSubmitting && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
+          <Button type="submit">
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign In
           </Button>
         </form>

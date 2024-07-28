@@ -1,4 +1,5 @@
 import 'server-only'
+
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -7,7 +8,7 @@ type SessionPayload = {
   email: string
 }
 function createExpiresAt() {
-  const days = 30 * 24 * 60 * 60 * 1000 // time in milliseconds
+  const days = 30 * 24 * 60 * 60 * 1000 // 30 days
   const expiresAt = new Date(Date.now() + days)
   return expiresAt
 }
@@ -19,15 +20,14 @@ function parseJwt(token: string) {
     return null
   }
 }
-export async function createSession() {
+export async function createSession(token: string) {
   const expiresAt = createExpiresAt()
-  const token = 'await createToken(sessionPayload, expiresAt)'
 
   cookies().set('session', token, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     expires: expiresAt,
-    sameSite: 'strict',
+    sameSite: 'lax',
     path: '/',
   })
 }

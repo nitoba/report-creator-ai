@@ -7,18 +7,20 @@ import { HttpClient } from '@/shared/http-client'
 export class AuthenticateUserService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  async execute({ email, password }: AuthenticateUserBody) {
-    try {
-      const response = await this.httpClient.post<AuthenticatedUserResponse>(
-        '/auth/authenticate',
-        { email, password },
-      )
+  async execute({
+    email,
+    password,
+  }: AuthenticateUserBody): Promise<AuthenticatedUserResponse> {
+    const response = await this.httpClient.post('/auth/authenticate', {
+      email,
+      password,
+    })
 
-      return response.data
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.log('ERROR NO SERVICE', error.response?.data)
-      throw new Error(error.response?.data)
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
     }
+
+    return response.data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
 }

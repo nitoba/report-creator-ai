@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
@@ -25,17 +27,29 @@ authenticate_user_use_case = AuthenticateUserUseCase(
 register_user_use_case = RegisterUserUseCase(user_repository, hasher)
 
 
-@router.post('/authenticate', response_model=AuthenticateUserUseCaseResponse)
+@router.post(
+    '/authenticate',
+    response_model=AuthenticateUserUseCaseResponse,
+    status_code=HTTPStatus.CREATED,
+)
 def authenticate(authenticate_body: AuthenticateUserUseCaseRequest):
     try:
         return authenticate_user_use_case.execute(authenticate_body)
     except Exception as error:
-        return JSONResponse(status_code=400, content={'message': str(error)})
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST, content={'message': str(error)}
+        )
 
 
-@router.post('/register', response_model=RegisterUserUseCaseResponse)
+@router.post(
+    '/register',
+    response_model=RegisterUserUseCaseResponse,
+    status_code=HTTPStatus.CREATED,
+)
 def register(create_user_body: RegisterUserUseCaseRequest):
     try:
         return register_user_use_case.execute(create_user_body)
     except Exception as error:
-        return JSONResponse(status_code=400, content={'message': str(error)})
+        return JSONResponse(
+            status_code=HTTPStatus.BAD_REQUEST, content={'message': str(error)}
+        )
