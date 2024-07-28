@@ -40,6 +40,7 @@ export async function getSession() {
     const left: {
       hasSession: false
       sub?: undefined
+      username?: undefined
       email?: undefined
     } = { hasSession: false }
 
@@ -50,10 +51,12 @@ export async function getSession() {
     const right: {
       hasSession: true
       sub: string
+      username: string
       email: string
     } = {
       hasSession: true,
       sub: session.sub,
+      username: session.username,
       email: session.email,
     }
     return right
@@ -61,6 +64,7 @@ export async function getSession() {
     const left: {
       hasSession: false
       sub?: undefined
+      username?: undefined
       email?: undefined
     } = { hasSession: false }
     return left
@@ -87,5 +91,5 @@ export async function updateSessionMiddleware(
 }
 
 export function deleteSession() {
-  cookies().delete('session')
+  cookies().set('session', '', { expires: new Date(0) })
 }
