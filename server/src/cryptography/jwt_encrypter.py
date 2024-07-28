@@ -12,6 +12,7 @@ ALGORITHM = 'HS256'
 
 class TokenPayload(BaseModel):
     sub: str
+    username: str
     email: str
     exp: datetime
 

@@ -41,6 +41,7 @@ class AuthenticateUserUseCase:
             raise Exception('Invalid credentials')
         token_payload = {
             'sub': user_exists.id,
+            'username': user_exists.username,
             'email': user_exists.email,
         }
         access_token = self.encrypter.encrypt(token_payload)

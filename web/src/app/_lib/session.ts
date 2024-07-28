@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 
 type SessionPayload = {
   sub: string
+  username: string
   email: string
 }
 function createExpiresAt() {
