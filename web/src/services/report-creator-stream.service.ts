@@ -28,7 +28,7 @@ export class ReportCreatorStreamService {
         signal = controller.signal
       }
       const streamResponse = await fetch(
-        `${env.NEXT_PUBLIC_API_BASE_URL}/generate-report-stream`,
+        `${env.NEXT_PUBLIC_API_BASE_URL}/reports/generate/stream`,
         { signal },
       )
 

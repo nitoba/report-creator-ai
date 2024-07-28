@@ -3,13 +3,20 @@ import { UploadReportService } from '@/services/upload-report.service'
 import { HttpClient } from '@/shared/http-client'
 import { createServerActionProcedure } from 'zsa'
 
-export const baseProcedure = createServerActionProcedure().handler(async () => {
-  const httpClient = new HttpClient()
-  const uploadReportService = new UploadReportService(httpClient)
-  const reportCreatorService = new ReportCreatorService(httpClient)
+const httpClient = new HttpClient()
 
-  return {
-    reportCreatorService,
-    uploadReportService,
-  }
+export const baseProcedure = createServerActionProcedure().handler(async () => {
+  return null
 })
+
+export const authenticatedProcedure = createServerActionProcedure().handler(
+  async () => {
+    const uploadReportService = new UploadReportService(httpClient)
+    const reportCreatorService = new ReportCreatorService(httpClient)
+
+    return {
+      reportCreatorService,
+      uploadReportService,
+    }
+  },
+)

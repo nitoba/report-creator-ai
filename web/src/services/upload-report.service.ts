@@ -11,7 +11,7 @@ export class UploadReportService {
   async execute({ content, title }: UploadReportBody) {
     try {
       const response = await this.httpClient.post<UploadReportResponse>(
-        '/upload-report',
+        '/reports/upload',
         {
           title,
           content,
