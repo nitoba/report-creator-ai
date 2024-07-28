@@ -4,11 +4,11 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from src.ai.agent import ReportCreatorAgent
+from src.auth.current_user import CurrentUser
 from src.database.repositories.discord_repository import DiscordRepository
 from src.database.repositories.google_drive_repository import GoogleDriveRepository
 from src.database.repositories.report_repository import ReportRepository
 from src.http.common.dtos.response import Message
-from src.http.routes.auth.current_user import CurrentUser
 from src.http.routes.reports.dtos.upload_report_request import UploadReportRequest
 from src.http.routes.reports.dtos.upload_report_response import UploadReportResponse
 from src.use_cases.create_report import CreateReportUseCase

@@ -7,11 +7,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from typing_extensions import Annotated
 
+from src.auth.auth_bearer import JWTBearer
 from src.database.connection import get_db
 from src.database.models import UserModel
 from src.env import env
 from src.http.common.dtos.user_public import UserPublic
-from src.http.routes.auth.auth_bearer import JWTBearer
 
 jwt_bearer = JWTBearer()
 
