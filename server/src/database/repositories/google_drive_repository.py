@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 
-from src.contracts.uploader import IUploader
+from src.contracts.uploader import IUploader, UploadResponse
 from src.env import env
 
 SERVICE_ACCOUNT_FILE = f'{path.dirname(__file__)}/../../credentials.json'
@@ -32,7 +32,7 @@ class GoogleDriveRepository(IUploader):
         )
         self.client = build('drive', 'v3', credentials=credentials)
 
-    def upload(self, content: str, filename: str):
+    def upload(self, content: str, filename: str) -> UploadResponse:
         file_metadata = {
             'name': filename,
             'parents': [env.DRIVE_FOLDER_ID],
@@ -51,7 +51,7 @@ class GoogleDriveRepository(IUploader):
             print(
                 f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
             )
-            return f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
+            return UploadResponse(id=file.get('id'))
         except Exception as err:
             print(err)
             raise err

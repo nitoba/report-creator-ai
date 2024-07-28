@@ -41,10 +41,11 @@ class ReportModel:
     __tablename__ = 'reports'
 
     id = Column(String, primary_key=True, default=str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey('users.id'), nullable=False)
-    title = Column(String(255), nullable=False)
-    storage_url = Column(String(255), nullable=False)
-    word_count = Column(Integer, nullable=False)
+    user_id: Mapped[str] = Column(String, ForeignKey('users.id'), nullable=False)
+    title: Mapped[str] = Column(String(255), nullable=False)
+    file_id: Mapped[str] = Column(String(255), nullable=False)
+    storage_url: Mapped[str] = Column(String(255), nullable=False)
+    word_count: Mapped[int] = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -52,7 +53,7 @@ class ReportModel:
         'UserModel', back_populates='reports', init=False
     )
     views: Mapped[List['ReportViewModel']] = relationship(
-        'ReportViewModel', back_populates='report'
+        'ReportViewModel', back_populates='report', init=False
     )
 
 
@@ -65,5 +66,5 @@ class ReportViewModel:
     viewed_at = Column(DateTime, default=datetime.now)
 
     report: Mapped['ReportModel'] = relationship(
-        'ReportModel', back_populates='views', lazy=False
+        'ReportModel', back_populates='views', init=False
     )

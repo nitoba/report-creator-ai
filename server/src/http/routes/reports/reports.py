@@ -8,14 +8,13 @@ from src.database.repositories.discord_repository import DiscordRepository
 from src.database.repositories.google_drive_repository import GoogleDriveRepository
 from src.database.repositories.report_repository import ReportRepository
 from src.http.common.dtos.response import Message
-from src.http.routes.reports.dtos.generate_report_response import GenerateReportResponse
+from src.http.routes.auth.current_user import CurrentUser
 from src.http.routes.reports.dtos.upload_report_request import UploadReportRequest
 from src.http.routes.reports.dtos.upload_report_response import UploadReportResponse
+from src.use_cases.create_report import CreateReportUseCase
 from src.use_cases.fetch_reports_from_user import FetchReportsFromUserUseCase
-from src.use_cases.report_creator_api import ReportCreatorUseCase
 from src.use_cases.report_generator import (
     ReportGeneratorStreamUseCase,
-    ReportGeneratorUseCase,
 )
 
 router = APIRouter(prefix='/reports', tags=['reports'])
@@ -25,52 +24,45 @@ content_repository = DiscordRepository()
 uploader_repository = GoogleDriveRepository()
 report_repository = ReportRepository()
 agent = ReportCreatorAgent()
-report_generator = ReportGeneratorUseCase(agent)
-report_generator_stream = ReportGeneratorStreamUseCase(agent)
-report_creator = ReportCreatorUseCase(
-    content_repository, report_generator, uploader_repository
-)
+report_generator_stream = ReportGeneratorStreamUseCase(agent, content_repository)
 fetch_reports_from_user_use_case = FetchReportsFromUserUseCase(report_repository)
+create_report_use_case = CreateReportUseCase(report_repository, uploader_repository)
 
 
-@router.post(
-    '/generate',
-    status_code=HTTPStatus.CREATED,
-    response_model=GenerateReportResponse,
-)
-def generate_report():
-    print('Generating report...')
-    content = content_repository.get_content()
-    response = report_creator.execute(content)
-    if not response:
-        return JSONResponse(
-            status_code=HTTPStatus.BAD_REQUEST,
-            content={'message': 'Error generating report'},
-        )
+# @router.post(
+#     '/generate',
+#     status_code=HTTPStatus.CREATED,
+#     response_model=GenerateReportResponse,
+# )
+# def generate_report():
+#     print('Generating report...')
+#     content = content_repository.get_content()
+#     response = report_creator.execute(content)
+#     if not response:
+#         return JSONResponse(
+#             status_code=HTTPStatus.BAD_REQUEST,
+#             content={'message': 'Error generating report'},
+#         )
 
-    return JSONResponse(
-        status_code=HTTPStatus.CREATED,
-        content={'report': response},
-    )
+#     return JSONResponse(
+#         status_code=HTTPStatus.CREATED,
+#         content={'report': response},
+#     )
 
 
 @router.get(
     '/generate/stream',
     status_code=HTTPStatus.CREATED,
 )
-def generate_report_stream():
-    print('Generating report...')
-    content = content_repository.get_content()
-    response = report_creator.execute(content)
-    if not response:
+def generate_report_stream(user: CurrentUser):
+    stream_response = report_generator_stream.execute()
+    if not stream_response:
         return JSONResponse(
             status_code=HTTPStatus.BAD_REQUEST,
             content={'message': 'Error generating report'},
         )
 
-    return StreamingResponse(
-        report_generator_stream.execute(response), media_type='text/plain'
-    )
+    return StreamingResponse(stream_response, media_type='text/plain')
 
 
 @router.post(
@@ -84,7 +76,7 @@ def generate_report_stream():
         },
     },
 )
-def upload_report(body: UploadReportRequest):
+def upload_report(body: UploadReportRequest, user: CurrentUser):
     if not body.title:
         body.title = f'{body.content.splitlines()[0]}'
 
@@ -99,9 +91,9 @@ def upload_report(body: UploadReportRequest):
 
 
 @router.get(
-    '/{user_id}',
+    path='',
     status_code=HTTPStatus.OK,
     response_model=list,
 )
-def fetch_reports_from_user(user_id: str):
-    return fetch_reports_from_user_use_case.execute(user_id)
+def fetch_reports_from_user(user: CurrentUser):
+    return fetch_reports_from_user_use_case.execute(user.id)

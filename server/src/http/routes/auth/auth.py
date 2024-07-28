@@ -30,7 +30,7 @@ def authenticate(authenticate_body: AuthenticateUserUseCaseRequest):
     try:
         return authenticate_user_use_case.execute(authenticate_body)
     except Exception as error:
-        return JSONResponse(status_code=400, content=str(error))
+        return JSONResponse(status_code=400, content={'message': str(error)})
 
 
 @router.post('/register', response_model=RegisterUserUseCaseResponse)
@@ -38,4 +38,4 @@ def register(create_user_body: RegisterUserUseCaseRequest):
     try:
         return register_user_use_case.execute(create_user_body)
     except Exception as error:
-        return JSONResponse(status_code=400, content=str(error))
+        return JSONResponse(status_code=400, content={'message': str(error)})
