@@ -90,6 +90,14 @@ export async function updateSessionMiddleware(
   return response
 }
 
+export async function getRawSession() {
+  const cookie = cookies().get('session')?.value
+  if (!cookie) {
+    return null
+  }
+  return cookie
+}
+
 export function deleteSession() {
   cookies().set('session', '', { expires: new Date(0) })
 }

@@ -48,10 +48,12 @@ class GoogleDriveRepository(IUploader):
                 .create(body=file_metadata, media_body=media, fields='id')
                 .execute()
             )
+            file_id = file.get('id')
+            print(file)
             print(
                 f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
             )
-            return UploadResponse(id=file.get('id'))
+            return UploadResponse(id=file.get('id'), url='')
         except Exception as err:
             print(err)
             raise err

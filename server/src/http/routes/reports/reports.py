@@ -29,27 +29,6 @@ fetch_reports_from_user_use_case = FetchReportsFromUserUseCase(report_repository
 create_report_use_case = CreateReportUseCase(report_repository, uploader_repository)
 
 
-# @router.post(
-#     '/generate',
-#     status_code=HTTPStatus.CREATED,
-#     response_model=GenerateReportResponse,
-# )
-# def generate_report():
-#     print('Generating report...')
-#     content = content_repository.get_content()
-#     response = report_creator.execute(content)
-#     if not response:
-#         return JSONResponse(
-#             status_code=HTTPStatus.BAD_REQUEST,
-#             content={'message': 'Error generating report'},
-#         )
-
-#     return JSONResponse(
-#         status_code=HTTPStatus.CREATED,
-#         content={'report': response},
-#     )
-
-
 @router.get(
     '/generate/stream',
     status_code=HTTPStatus.CREATED,
@@ -77,11 +56,9 @@ def generate_report_stream(user: CurrentUser):
     },
 )
 def upload_report(body: UploadReportRequest, user: CurrentUser):
-    if not body.title:
-        body.title = f'{body.content.splitlines()[0]}'
-
     try:
-        result = uploader_repository.upload(filename=body.title, content=body.content)
+        result = create_report_use_case.execute(body, user_id=user.id)
+
         return {'message': result}
     except Exception as err:
         return JSONResponse(

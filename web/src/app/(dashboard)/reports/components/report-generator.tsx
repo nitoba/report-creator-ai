@@ -51,16 +51,11 @@ export function ReportGenerator() {
             'animate-pulse': isGeneratingReport,
           })}
         >
-          <h3 className="text-2xl font-bold tracking-tight">Generate Report</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-4xl font-bold tracking-tight">Generate Report</h3>
+          <p className="text-muted-foreground">
             To start clicking the button below.
           </p>
-          <div className="flex gap-4 mt-4 w-full">
-            <AlertDialogCancel asChild>
-              <Button className="w-full" variant="outline">
-                Cancel
-              </Button>
-            </AlertDialogCancel>
+          <div className="flex flex-col gap-4 mt-4 w-1/2">
             <Button
               className="w-full"
               onClick={() => handleGenerateReport()}
@@ -71,6 +66,11 @@ export function ReportGenerator() {
                 <Loader2 className="ml-2 h-4 w-4 animate-spin" />
               )}
             </Button>
+            <AlertDialogCancel asChild disabled={isGeneratingReport}>
+              <Button className="w-full" variant="outline">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
           </div>
         </div>
       )}
@@ -88,29 +88,34 @@ export function ReportGenerator() {
           <ContentMarkdown content={streamedContent} />
           <div className="space-y-4 mt-auto w-full">
             <div className="w-full gap-2 flex">
-              <Button
-                variant="secondary"
-                className="w-full"
-                disabled={isUploadingReport || !finishedStreaming}
-                onClick={() => {
-                  handleGenerateReport()
-                }}
-              >
-                Generate again
-              </Button>
               {finishedStreaming && (
-                <Button
-                  className="w-full"
-                  disabled={isUploadingReport}
-                  onClick={() => {
-                    handleUploadReport({
-                      title: titleInputRef.current!.value,
-                      content: streamedContent,
-                    })
-                  }}
-                >
-                  Upload Report
-                </Button>
+                <>
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    disabled={isUploadingReport || !finishedStreaming}
+                    onClick={() => {
+                      handleGenerateReport()
+                    }}
+                  >
+                    Generate again
+                  </Button>
+                  <Button
+                    className="w-full"
+                    disabled={isUploadingReport}
+                    onClick={() => {
+                      handleUploadReport({
+                        title: titleInputRef.current!.value,
+                        content: streamedContent,
+                      })
+                    }}
+                  >
+                    Upload Report
+                    {isUploadingReport && (
+                      <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                    )}
+                  </Button>
+                </>
               )}
             </div>
 

@@ -9,10 +9,12 @@ class CreateReportUseCase:
         self.report_repository = report_repository
         self.uploader = uploader
 
-    def execute(self, request: UploadReportRequest) -> None:
+    def execute(self, request: UploadReportRequest, user_id: str) -> None:
         try:
             if not request.title:
-                request.title = f'{request.content.splitlines()[0]}'
+                lines = request.content.splitlines()
+                lines.remove('')
+                request.title = lines[0].removeprefix('**').removesuffix('**')
 
             result = self.uploader.upload(
                 filename=request.title,
@@ -22,13 +24,13 @@ class CreateReportUseCase:
             report = ReportModel(
                 title=request.title,
                 file_id=result.id,
-                user_id=request.user_id,
-                storage_url=result.url,
+                user_id=user_id,
+                storage_url='https://www.url.com',
                 word_count=len(request.content.split()),
             )
 
             self.report_repository.save(report)
 
-            return {'message': result}
+            return 'Report created successfully'
         except Exception as e:
             print(f'Error creating report: {e}')

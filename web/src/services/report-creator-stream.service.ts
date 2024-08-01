@@ -27,9 +27,16 @@ export class ReportCreatorStreamService {
         controller = new AbortController()
         signal = controller.signal
       }
+      const accessToken = localStorage.getItem('access_token')
+
+      if (!accessToken) throw new Error('No access token found')
+
+      const headers = new Headers({
+        Authorization: `Bearer ${accessToken}`,
+      })
       const streamResponse = await fetch(
         `${env.NEXT_PUBLIC_API_BASE_URL}/reports/generate/stream`,
-        { signal },
+        { signal, headers },
       )
 
       if (streamResponse.status !== 200)
