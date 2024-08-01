@@ -22,6 +22,8 @@ import {
 import { Input } from './ui/input'
 import { UserMenu } from './user-menu'
 
+import { Breadcrumbs } from './breadcrumbs'
+
 export function Header() {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
@@ -98,14 +100,15 @@ export function Header() {
           </div>
         </SheetContent>
       </Sheet>
-      <div className="w-full flex-1">
-        <form>
-          <div className="relative">
+      <div className="w-full flex-1 flex items-center gap-4">
+        <Breadcrumbs />
+        <form className="ml-auto">
+          <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search reports..."
-              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+              className="w-full flex-1 appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-[400px]"
             />
           </div>
         </form>

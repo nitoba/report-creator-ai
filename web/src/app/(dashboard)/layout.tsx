@@ -1,11 +1,10 @@
-import Link from 'next/link'
 import { ClipboardMinus, Stars } from 'lucide-react'
+import Link from 'next/link'
+import { Sidebar } from '../_components/sidebar'
+import { Header } from '../_components/header'
+import { PropsWithChildren } from 'react'
 
-import { Sidebar } from './_components/sidebar'
-import { Header } from './_components/header'
-import { Main } from './_components/main'
-
-export default function Page() {
+export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -22,7 +21,7 @@ export default function Page() {
       </div>
       <div className="flex flex-col">
         <Header />
-        <Main />
+        {children}
       </div>
     </div>
   )
