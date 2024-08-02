@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, registry, relationship
 
 from src.http.common.dtos.user_public import UserPublic
@@ -20,7 +21,10 @@ class UserModel:
     password: Mapped[str] = Column(String)
 
     reports: Mapped[List['ReportModel']] = relationship(
-        'ReportModel', back_populates='user', init=False
+        'ReportModel',
+        back_populates='user',
+        init=False,
+        lazy='noload',
     )
 
     created_at = Column(DateTime, default=datetime.now)
@@ -34,6 +38,15 @@ class UserModel:
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
+
+    @hybrid_property
+    def safe_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            # Add other fields you want to include, except password
+        }
 
 
 @table_registry.mapped_as_dataclass
@@ -50,10 +63,10 @@ class ReportModel:
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     user: Mapped['UserModel'] = relationship(
-        'UserModel', back_populates='reports', init=False
+        'UserModel', back_populates='reports', init=False, lazy='noload'
     )
     views: Mapped[List['ReportViewModel']] = relationship(
-        'ReportViewModel', back_populates='report', init=False
+        'ReportViewModel', back_populates='report', init=False, lazy='noload'
     )
 
 
