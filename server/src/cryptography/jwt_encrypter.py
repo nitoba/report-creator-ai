@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 
 from src.env import env
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 300
 ALGORITHM = 'HS256'
 
 

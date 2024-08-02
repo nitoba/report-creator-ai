@@ -9,6 +9,7 @@ class ReportRepository:
         with get_db() as db:
             db.add(report)
             db.commit()
+            # refresh the instance to get the id
             db.refresh(report)
 
     def find_all_by_user_id(self, user_id: str) -> List[ReportModel]:

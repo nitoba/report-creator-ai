@@ -31,5 +31,9 @@ class Env(BaseSettings):
     DATABASE_URL: str
     JWT_SECRET: str
 
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    STORAGE_BUCKET: str
+
 
 env = Env()

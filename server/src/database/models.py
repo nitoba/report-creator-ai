@@ -40,7 +40,7 @@ class UserModel:
 class ReportModel:
     __tablename__ = 'reports'
 
-    id = Column(String, primary_key=True, default=str(uuid.uuid4()))
+    id: Mapped[str] = Column(String, primary_key=True)
     user_id: Mapped[str] = Column(String, ForeignKey('users.id'), nullable=False)
     title: Mapped[str] = Column(String(255), nullable=False)
     file_id: Mapped[str] = Column(String(255), nullable=False)
