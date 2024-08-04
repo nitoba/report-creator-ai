@@ -1,7 +1,9 @@
 from typing import List
 
+from sqlalchemy.orm import joinedload
+
 from src.database.connection import get_db
-from src.database.models import ReportModel
+from src.database.models import ReportModel, UserModel
 
 
 class ReportRepository:
@@ -14,7 +16,12 @@ class ReportRepository:
 
     def find_all_by_user_id(self, user_id: str) -> List[ReportModel]:
         with get_db() as db:
-            return db.query(ReportModel).filter_by(user_id=user_id).all()
+            return (
+                db.query(ReportModel)
+                .options(joinedload(ReportModel.user).load_only(UserModel.safe_dict))
+                .filter_by(user_id=user_id)
+                .all()
+            )
 
     def find_by_id(self, report_id: str) -> ReportModel | None:
         with get_db() as db:
