@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react'
 
 const reportCreatorStreamService = new ReportCreatorStreamService()
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const fakeReport = `
 **Relatório Semanal IBS - 25/07/2024 à 31/07/2024**
 

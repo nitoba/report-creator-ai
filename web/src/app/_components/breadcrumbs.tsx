@@ -16,7 +16,10 @@ export function Breadcrumbs() {
     return null
   }
 
-  const segments = window.location.pathname.split('/').filter(Boolean)
+  const segments =
+    typeof window !== 'undefined'
+      ? window.location.pathname.split('/').filter(Boolean)
+      : []
 
   return (
     <Breadcrumb>
