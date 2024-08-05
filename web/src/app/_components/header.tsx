@@ -17,7 +17,7 @@ export function Header() {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="flex flex-col">
+        <SheetContent side="left" className="flex flex-col p-2 pt-12">
           <Sidebar isInSheet />
         </SheetContent>
       </Sheet>
