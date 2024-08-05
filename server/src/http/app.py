@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.env import env
 from src.http.routes.auth.auth import router as auth_router
 from src.http.routes.reports.reports import router as reports_router
 
-app = FastAPI()
-
-app = FastAPI()
+app = FastAPI(docs_url=env.ENV_MODE == 'dev' and '/docs' or None, redoc_url=None)
 
 origins = [
     'http://localhost',
