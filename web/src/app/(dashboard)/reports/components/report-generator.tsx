@@ -14,7 +14,11 @@ import { Input } from '@/app/_components/ui/input'
 import { ContentMarkdown } from '@/app/_components/markdown'
 import { AlertDialogCancel } from '@/app/_components/ui/alert-dialog'
 
-export function ReportGenerator() {
+type ReportGeneratorProps = {
+  onUploadedReport: () => void
+}
+
+export function ReportGenerator({ onUploadedReport }: ReportGeneratorProps) {
   const {
     finishedStreaming,
     handleAbortReportCreation,
@@ -30,6 +34,7 @@ export function ReportGenerator() {
       onSuccess: (result) => {
         toast.success(result.data.message)
         titleInputRef.current!.value = ''
+        onUploadedReport()
       },
 
       onError: (error) => {

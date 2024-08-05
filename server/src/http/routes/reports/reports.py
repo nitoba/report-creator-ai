@@ -33,7 +33,9 @@ supabase_repository = SupabaseRepository(supabase)
 agent = ReportCreatorAgent()
 report_generator_stream = ReportGeneratorStreamUseCase(agent, content_repository)
 fetch_reports_from_user_use_case = FetchReportsFromUserUseCase(report_repository)
-create_report_use_case = CreateReportUseCase(report_repository, uploader_repository)
+create_report_use_case = CreateReportUseCase(
+    report_repository, uploader_repository, supabase_repository
+)
 
 
 @router.get(
@@ -64,7 +66,9 @@ def generate_report_stream(user: CurrentUser):
 )
 def upload_report(body: UploadReportRequest, user: CurrentUser):
     try:
-        result = create_report_use_case.execute(body, user_id=user.id)
+        result = create_report_use_case.execute(
+            body, user_id=user.id, user_email=user.email
+        )
 
         return {'message': result}
     except Exception as err:
@@ -100,8 +104,6 @@ def process_files_in_drive_folder(user: CurrentUser):
 
         if not encoding:
             raise UnicodeDecodeError('Não foi possível detectar a codificação do arquivo')
-
-        print(f'Criado em: {created_time}')
 
         content = content_bytes.decode(encoding)
         word_count = len(re.findall(r'\w+', content))

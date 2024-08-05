@@ -10,9 +10,16 @@ import {
 } from '@/app/_components/ui/alert-dialog'
 import { ReportGenerator } from './components/report-generator'
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryClient } from '@/app/_lib/query-client'
 
 export default function ReportsPage() {
+  const qClient = useQueryClient(queryClient)
   const [reportGeneratorIsOpen, setReportGeneratorIsOpen] = useState(false)
+  function onUploadedReport() {
+    setReportGeneratorIsOpen(false)
+    qClient.invalidateQueries({ queryKey: ['reports'] })
+  }
   return (
     <main className="p-4 lg:gap-6 lg:p-6 flex flex-col gap-4">
       <AlertDialog
@@ -36,7 +43,7 @@ export default function ReportsPage() {
         <ReportsList />
 
         <AlertDialogContent className="max-w-7xl">
-          <ReportGenerator />
+          <ReportGenerator onUploadedReport={onUploadedReport} />
         </AlertDialogContent>
       </AlertDialog>
     </main>

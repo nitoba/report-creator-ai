@@ -19,6 +19,7 @@ class ReportRepository:
             reports = (
                 db.query(ReportModel)
                 .filter_by(user_id=user_id)
+                .order_by(ReportModel.created_at.desc())
                 .offset(page_index * page_size)
                 .limit(page_size)
                 .all()
