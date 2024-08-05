@@ -178,3 +178,4 @@ pyrightconfig.json
 credentials.json
 /tmp
 .vercel
+database.db

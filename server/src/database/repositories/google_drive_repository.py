@@ -1,14 +1,13 @@
 import io
-from os import path
+import re
 
+import chardet
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaIoBaseDownload, MediaIoBaseUpload
 
-from src.contracts.uploader import IUploader
+from src.contracts.uploader import IUploader, UploadResponse
 from src.env import env
-
-SERVICE_ACCOUNT_FILE = f'{path.dirname(__file__)}/../../credentials.json'
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
@@ -32,7 +31,7 @@ class GoogleDriveRepository(IUploader):
         )
         self.client = build('drive', 'v3', credentials=credentials)
 
-    def upload(self, content: str, filename: str):
+    def upload(self, content: str, filename: str) -> UploadResponse:
         file_metadata = {
             'name': filename,
             'parents': [env.DRIVE_FOLDER_ID],
@@ -48,10 +47,51 @@ class GoogleDriveRepository(IUploader):
                 .create(body=file_metadata, media_body=media, fields='id')
                 .execute()
             )
+            file_id = file.get('id')
+            print(file)
             print(
                 f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
             )
-            return f"Arquivo '{filename}' foi enviado com sucesso para o Google Drive. ID do arquivo: {file.get('id')}"
+            return UploadResponse(id=file.get('id'), url='')
         except Exception as err:
             print(err)
             raise err
+
+    def list_files_in_folder(self) -> list:
+        results = (
+            self.client.files()
+            .list(
+                q=f"'{env.DRIVE_FOLDER_ID}' in parents and mimeType != 'application/vnd.google-apps.folder'",
+                fields='files(id, name, mimeType, createdTime)',
+            )
+            .execute()
+        )
+        return results.get('files', [])
+
+    def download_file(self, file_id: str, mime_type: str) -> io.BytesIO:
+        request = self.client.files().export_media(
+            fileId=file_id,
+            mimeType='text/plain',
+        )
+
+        file_stream = io.BytesIO()
+        downloader = MediaIoBaseDownload(file_stream, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+        file_stream.seek(0)  # Move the cursor to the beginning of the stream
+        return file_stream
+
+    def count_words_in_file(file_stream: io.BytesIO) -> int:
+        file_stream.seek(0)  # Ensure we're reading from the start of the stream
+        content_bytes = file_stream.read()
+
+        # Detectar a codificação do conteúdo
+        result = chardet.detect(content_bytes)
+        encoding = result['encoding']
+
+        if not encoding:
+            raise UnicodeDecodeError('Não foi possível detectar a codificação do arquivo')
+
+        content = content_bytes.decode(encoding)
+        return len(re.findall(r'\w+', content))

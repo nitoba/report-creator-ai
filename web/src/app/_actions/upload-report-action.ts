@@ -1,10 +1,10 @@
 'use server'
 
 import { ZSAError } from 'zsa'
-import { baseProcedure } from '../_lib/zsa-procedures'
+import { authenticatedProcedure } from '../_lib/zsa-procedures'
 import { uploadReportSchema } from '@/shared/dtos/upload-report-schema'
 
-export const uploadReportAction = baseProcedure
+export const uploadReportAction = authenticatedProcedure
   .createServerAction()
   .input(uploadReportSchema)
   .handler(async ({ ctx, input }) => {

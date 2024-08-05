@@ -28,5 +28,12 @@ class Env(BaseSettings):
     GOOGLE_AUTH_PROVIDER_X509_CERT_URL: str
     GOOGLE_CLIENT_X509_CERT_URL: str
 
+    DATABASE_URL: str
+    JWT_SECRET: str
+
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    STORAGE_BUCKET: str
+
 
 env = Env()

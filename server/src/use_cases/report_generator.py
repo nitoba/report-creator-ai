@@ -1,22 +1,21 @@
 from typing import Iterator
 
 from src.ai.agent import ReportCreatorAgent
-
-
-class ReportGeneratorUseCase:
-    def __init__(self, agent: ReportCreatorAgent):
-        self.agent = agent
-
-    def execute(self, report: str) -> str:
-        return self.agent.run(report)
+from src.contracts.content_handler import IContentHandler
 
 
 class ReportGeneratorStreamUseCase:
-    def __init__(self, agent: ReportCreatorAgent):
+    def __init__(self, agent: ReportCreatorAgent, content_handler: IContentHandler):
         self.agent = agent
+        self.content_handler = content_handler
 
-    def execute(self, report: str) -> Iterator[str]:
-        response = self.agent.run_as_stream(report)
+    def execute(self) -> Iterator[str] | None:
+        content = self.content_handler.get_content()
+
+        if not content:
+            return None
+
+        response = self.agent.run_as_stream(content)
 
         for chunk in response:
             print(chunk, end='', flush=True)

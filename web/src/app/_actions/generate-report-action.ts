@@ -1,8 +1,8 @@
 'use server'
 
-import { baseProcedure } from '../_lib/zsa-procedures'
+import { authenticatedProcedure } from '../_lib/zsa-procedures'
 
-export const generateReportAction = baseProcedure
+export const generateReportAction = authenticatedProcedure
   .createServerAction()
   .handler(async ({ ctx }) => {
     const reportCreated = await ctx.reportCreatorService.execute()
