@@ -7,6 +7,7 @@ type SessionPayload = {
   sub: string
   username: string
   email: string
+  exp: number
 }
 function createExpiresAt() {
   const days = 30 * 24 * 60 * 60 * 1000 // 30 days
@@ -46,8 +47,18 @@ export async function getSession() {
 
     return left
   }
+
   const session = parseJwt(cookie)
+
   if (!!session && !!session.sub) {
+    const exp = session.exp * 1000
+
+    const now = Date.now()
+
+    if (exp < now) {
+      return { hasSession: false }
+    }
+
     const right: {
       hasSession: true
       sub: string

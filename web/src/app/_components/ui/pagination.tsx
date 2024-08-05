@@ -24,12 +24,12 @@ export function Pagination({
   const canGoToPrevPage = pageIndex - 1 >= 0
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex sm:items-center justify-between w-full sm:flex-row flex-col gap-4">
       <span className="text-sm text-muted-foreground">
         Total of the {totalCount} items(s)
       </span>
 
-      <div className="flex items-center gap-6 lg:gap-8">
+      <div className="flex items-center justify-between sm:justify-start gap-6 lg:gap-8">
         <span className="text-sm font-medium">
           Page {pageIndex + 1} from {pages}
         </span>

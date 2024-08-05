@@ -47,7 +47,7 @@ export function ReportGenerator({ onUploadedReport }: ReportGeneratorProps) {
 
   return (
     <div
-      className="p-6 flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
+      className="sm:p-6 p-2 flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
       x-chunk="dashboard-02-chunk-1"
     >
       {!isStreamingData && (
@@ -60,7 +60,7 @@ export function ReportGenerator({ onUploadedReport }: ReportGeneratorProps) {
           <p className="text-muted-foreground">
             To start clicking the button below.
           </p>
-          <div className="flex flex-col gap-4 mt-4 w-1/2">
+          <div className="flex flex-col sm:gap-4 mt-4 sm:w-1/2 w-full">
             <Button
               className="w-full"
               onClick={() => handleGenerateReport()}

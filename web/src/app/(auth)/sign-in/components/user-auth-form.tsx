@@ -4,7 +4,7 @@ import { Button } from '@/app/_components/ui/button'
 import { Input } from '@/app/_components/ui/input'
 import { cn } from '@/app/_lib/utils'
 
-import { Loader2 } from 'lucide-react'
+import { Loader2, Stars } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import {
@@ -50,7 +50,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       className={cn('grid gap-6 animate-in fade-in-50 duration-300', className)}
       {...props}
     >
-      <div className="flex flex-col space-y-2 text-center">
+      <div className="flex flex-col space-y-2 text-center items-center">
+        <div className="flex flex-col gap-1 items-center text-3xl font-medium font-mono mb-5 sm:hidden">
+          <Stars className="size-8 mr-2" />
+          Report Creator AI
+        </div>
         <h1 className="text-2xl font-semibold tracking-tight">
           Login into your account
         </h1>

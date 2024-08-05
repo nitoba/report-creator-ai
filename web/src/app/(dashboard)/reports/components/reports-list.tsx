@@ -65,7 +65,7 @@ export function ReportsList() {
 
   return (
     <Card className="rounded-lg border border-dashed shadow-sm">
-      <CardContent className="mt-4">
+      <CardContent className="sm:mt-4 p-2 sm:p-6 mt-0">
         <Table>
           <TableHeader>
             <TableRow>
@@ -108,7 +108,7 @@ export function ReportsList() {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="p-2 sm:p-6">
         {!!reports && (
           <Pagination
             pageIndex={reports.page}

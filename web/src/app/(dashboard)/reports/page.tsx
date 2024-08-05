@@ -26,7 +26,7 @@ export default function ReportsPage() {
         open={reportGeneratorIsOpen}
         onOpenChange={setReportGeneratorIsOpen}
       >
-        <header className="flex items-center justify-between">
+        <header className="flex justify-between flex-col sm:flex-row gap-2">
           <div className="flex flex-col gap-1">
             <h1 className="text-lg font-semibold md:text-2xl">Reports</h1>
             <p className="text-sm text-muted-foreground">
@@ -34,7 +34,7 @@ export default function ReportsPage() {
             </p>
           </div>
           <AlertDialogTrigger asChild>
-            <Button size="sm">
+            <Button size="sm" className="w-full sm:w-auto">
               <PlusCircle className="size-4 mr-1" /> Add Report
             </Button>
           </AlertDialogTrigger>
@@ -42,7 +42,7 @@ export default function ReportsPage() {
 
         <ReportsList />
 
-        <AlertDialogContent className="max-w-7xl">
+        <AlertDialogContent className="sm:max-w-7xl p-3 max-w-sm sm:p-6 rounded-md">
           <ReportGenerator onUploadedReport={onUploadedReport} />
         </AlertDialogContent>
       </AlertDialog>
