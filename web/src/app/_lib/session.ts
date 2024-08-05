@@ -56,7 +56,13 @@ export async function getSession() {
     const now = Date.now()
 
     if (exp < now) {
-      return { hasSession: false }
+      const left: {
+        hasSession: false
+        sub?: undefined
+        username?: undefined
+        email?: undefined
+      } = { hasSession: false }
+      return left
     }
 
     const right: {
