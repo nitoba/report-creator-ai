@@ -26,12 +26,12 @@ export function Pagination({
   return (
     <div className="flex items-center justify-between w-full">
       <span className="text-sm text-muted-foreground">
-        Total de {totalCount} items(s)
+        Total of the {totalCount} items(s)
       </span>
 
       <div className="flex items-center gap-6 lg:gap-8">
         <span className="text-sm font-medium">
-          Página {pageIndex + 1} de {pages}
+          Page {pageIndex + 1} from {pages}
         </span>
 
         <div className="flex items-center gap-2">
