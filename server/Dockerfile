@@ -49,8 +49,9 @@ WORKDIR /app
 
 COPY . .
 
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
 EXPOSE ${PORT}
 
-CMD alembic upgrade head
-
-ENTRYPOINT uvicorn src.http.app:app --host 0.0.0.0 --port ${PORT}
+ENTRYPOINT ["/app/entrypoint.sh"]
