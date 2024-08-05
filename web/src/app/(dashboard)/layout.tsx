@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Sidebar } from '../_components/sidebar'
 import { Header } from '../_components/header'
 import { PropsWithChildren } from 'react'
+import { ReactQueryProvider } from '../_providers/react-query'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
@@ -20,8 +21,10 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
         </div>
       </div>
       <div className="flex flex-col">
-        <Header />
-        {children}
+        <ReactQueryProvider>
+          <Header />
+          {children}
+        </ReactQueryProvider>
       </div>
     </div>
   )

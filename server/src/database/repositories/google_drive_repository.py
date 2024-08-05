@@ -62,8 +62,7 @@ class GoogleDriveRepository(IUploader):
             self.client.files()
             .list(
                 q=f"'{env.DRIVE_FOLDER_ID}' in parents and mimeType != 'application/vnd.google-apps.folder'",
-                pageSize=10,
-                fields='files(id, name, mimeType)',
+                fields='files(id, name, mimeType, createdTime)',
             )
             .execute()
         )

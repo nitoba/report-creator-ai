@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import List
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, registry, relationship
 
 from src.http.common.dtos.user_public import UserPublic
@@ -39,15 +38,6 @@ class UserModel:
             updated_at=self.updated_at,
         )
 
-    @hybrid_property
-    def safe_dict(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'email': self.email,
-            # Add other fields you want to include, except password
-        }
-
 
 @table_registry.mapped_as_dataclass
 class ReportModel:
@@ -59,7 +49,7 @@ class ReportModel:
     file_id: Mapped[str] = Column(String(255), nullable=False)
     storage_url: Mapped[str] = Column(String(255), nullable=False)
     word_count: Mapped[int] = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.now)
+    created_at: Mapped[datetime] = Column(DateTime)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     user: Mapped['UserModel'] = relationship(

@@ -51,8 +51,8 @@ Realizei várias atividades importantes durante a semana, incluindo:
 
 export function useReportStreaming() {
   const [isGeneratingReport, setIsGeneratingReport] = useState(false)
-  const [streamedContent, setStreamedContent] = useState(fakeReport)
-  const [finishedStreaming, setFinishedStreaming] = useState(true)
+  const [streamedContent, setStreamedContent] = useState('')
+  const [finishedStreaming, setFinishedStreaming] = useState(false)
   const abortReportCreation = useRef<() => void>()
   const titleInputRef = useRef<HTMLInputElement>(null)
 

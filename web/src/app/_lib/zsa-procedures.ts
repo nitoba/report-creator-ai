@@ -1,4 +1,5 @@
 import { AuthenticateUserService } from '@/services/authenticate-user.service'
+import { FetchReportsFromUserService } from '@/services/fetch-reports-from-user.service'
 import { RegisterUserService } from '@/services/register-user.service'
 import { ReportCreatorService } from '@/services/report-creator.service'
 import { UploadReportService } from '@/services/upload-report.service'
@@ -22,10 +23,14 @@ export const authenticatedProcedure = createServerActionProcedure().handler(
   async () => {
     const uploadReportService = new UploadReportService(httpClient)
     const reportCreatorService = new ReportCreatorService(httpClient)
+    const fetchReportsFromUserService = new FetchReportsFromUserService(
+      httpClient,
+    )
 
     return {
       reportCreatorService,
       uploadReportService,
+      fetchReportsFromUserService,
     }
   },
 )

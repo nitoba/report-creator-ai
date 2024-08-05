@@ -16,7 +16,7 @@ from src.database.repositories.supabase_repository import SupabaseRepository
 from src.http.common.dtos.response import Message
 from src.http.routes.reports.dtos.upload_report_request import UploadReportRequest
 from src.http.routes.reports.dtos.upload_report_response import UploadReportResponse
-from src.lib.supabase import supabase
+from src.supabase.supabase import supabase
 from src.use_cases.create_report import CreateReportUseCase
 from src.use_cases.fetch_reports_from_user import FetchReportsFromUserUseCase
 from src.use_cases.report_generator import (
@@ -77,10 +77,9 @@ def upload_report(body: UploadReportRequest, user: CurrentUser):
 @router.get(
     path='',
     status_code=HTTPStatus.OK,
-    response_model=list,
 )
-def fetch_reports_from_user(user: CurrentUser):
-    return fetch_reports_from_user_use_case.execute(user.id)
+def fetch_reports_from_user(user: CurrentUser, page_index: int = 0, page_size: int = 10):
+    return fetch_reports_from_user_use_case.execute(user.id, page_index, page_size)
 
 
 @router.post(path='/sync')
@@ -90,6 +89,7 @@ def process_files_in_drive_folder(user: CurrentUser):
         file_id = file['id']
         file_name = file['name']
         mime_type = file['mimeType']
+        created_time = file['createdTime']
         downloaded_file = uploader_repository.download_file(file_id, mime_type)
         downloaded_file.seek(0)  # Ensure we're reading from the start of the stream
         content_bytes = downloaded_file.read()
@@ -101,6 +101,8 @@ def process_files_in_drive_folder(user: CurrentUser):
         if not encoding:
             raise UnicodeDecodeError('Não foi possível detectar a codificação do arquivo')
 
+        print(f'Criado em: {created_time}')
+
         content = content_bytes.decode(encoding)
         word_count = len(re.findall(r'\w+', content))
         upload_response = supabase_repository.upload_to_supabase(content_bytes, file_name)
@@ -111,6 +113,7 @@ def process_files_in_drive_folder(user: CurrentUser):
             word_count=word_count,
             user_id=user.id,
             storage_url=upload_response.url,
+            created_at=created_time,
         )
         report_repository.save(report)
     return JSONResponse(

@@ -1,3 +1,5 @@
+'use client'
+
 import { MoreHorizontal } from 'lucide-react'
 
 import { Badge } from '@/app/_components/ui/badge'
@@ -19,20 +21,56 @@ import {
   TableRow,
 } from '@/app/_components/ui/table'
 import { Card, CardContent, CardFooter } from '@/app/_components/ui/card'
-
+import { fetchReportsFromUserAction } from '@/app/_actions/fetch-reports-from-user-action'
+import { useServerActionQuery } from '@/app/_hooks/useServerActionHooks'
+import dayjs from 'dayjs'
+import { Pagination } from '@/app/_components/ui/pagination'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { z } from 'zod'
+import { useCallback } from 'react'
+import { ReportsTableSkeleton } from './reports-skeleton'
 export function ReportsList() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get('page') ?? '1')
+
+  const { data: reports, isLoading } = useServerActionQuery(
+    fetchReportsFromUserAction,
+    {
+      input: {
+        page_index: pageIndex,
+        page_size: 10,
+      },
+      queryKey: ['reports', pageIndex],
+    },
+  )
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams],
+  )
+
+  function handlePaginate(page: number) {
+    router.push(pathname + '?' + createQueryString('page', String(page + 1)))
+  }
+
   return (
     <Card className="rounded-lg border border-dashed shadow-sm">
       <CardContent className="mt-4">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Total Sales
-              </TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Word Count</TableHead>
               <TableHead className="hidden md:table-cell">Created at</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
@@ -40,177 +78,45 @@ export function ReportsList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">
-                Laser Lemonade Machine
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">Draft</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$499.99</TableCell>
-              <TableCell className="hidden md:table-cell">25</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-07-12 10:42 AM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">
-                Hypernova Headphones
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">Active</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$129.99</TableCell>
-              <TableCell className="hidden md:table-cell">100</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-10-18 03:21 PM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">AeroGlow Desk Lamp</TableCell>
-              <TableCell>
-                <Badge variant="outline">Active</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$39.99</TableCell>
-              <TableCell className="hidden md:table-cell">50</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-11-29 08:15 AM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">
-                TechTonic Energy Drink
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary">Draft</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$2.99</TableCell>
-              <TableCell className="hidden md:table-cell">0</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-12-25 11:59 PM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">
-                Gamer Gear Pro Controller
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">Active</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$59.99</TableCell>
-              <TableCell className="hidden md:table-cell">75</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2024-01-01 12:00 AM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">Luminous VR Headset</TableCell>
-              <TableCell>
-                <Badge variant="outline">Active</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$199.99</TableCell>
-              <TableCell className="hidden md:table-cell">30</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2024-02-14 02:14 PM
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
+            {isLoading && <ReportsTableSkeleton />}
+            {reports?.data.map((report) => (
+              <TableRow key={report.id}>
+                <TableCell className="font-medium">{report.title}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{report.word_count}</Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {dayjs(report.created_at).format('DD/MM/YYYY [at] HH:mm:ss')}
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter>
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
+        {!!reports && (
+          <Pagination
+            pageIndex={reports.page}
+            perPage={reports.size}
+            totalCount={reports.total}
+            onPageChange={handlePaginate}
+          />
+        )}
       </CardFooter>
     </Card>
   )

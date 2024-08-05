@@ -1,9 +1,6 @@
-from typing import List
-
-from sqlalchemy.orm import joinedload
-
 from src.database.connection import get_db
-from src.database.models import ReportModel, UserModel
+from src.database.models import ReportModel
+from src.database.paginated import Paginated
 
 
 class ReportRepository:
@@ -14,13 +11,24 @@ class ReportRepository:
             # refresh the instance to get the id
             db.refresh(report)
 
-    def find_all_by_user_id(self, user_id: str) -> List[ReportModel]:
+    def find_all_by_user_id(
+        self, user_id: str, page_index: int = 0, page_size: int = 10
+    ) -> Paginated[ReportModel]:
         with get_db() as db:
-            return (
+            total = db.query(ReportModel).filter_by(user_id=user_id).count()
+            reports = (
                 db.query(ReportModel)
-                .options(joinedload(ReportModel.user).load_only(UserModel.safe_dict))
                 .filter_by(user_id=user_id)
+                .offset(page_index * page_size)
+                .limit(page_size)
                 .all()
+            )
+
+            return Paginated(
+                page=page_index,
+                size=page_size,
+                total=total,
+                data=reports,
             )
 
     def find_by_id(self, report_id: str) -> ReportModel | None:
