@@ -25,42 +25,24 @@ import { fetchReportsFromUserAction } from '@/app/_actions/fetch-reports-from-us
 import { useServerActionQuery } from '@/app/_hooks/useServerActionHooks'
 import dayjs from 'dayjs'
 import { Pagination } from '@/app/_components/ui/pagination'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { z } from 'zod'
-import { useCallback } from 'react'
 import { ReportsTableSkeleton } from './reports-skeleton'
+import { useQueryState, parseAsInteger } from 'nuqs'
 export function ReportsList() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const pageIndex = z.coerce
-    .number()
-    .transform((page) => page - 1)
-    .parse(searchParams.get('page') ?? '1')
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
 
   const { data: reports, isLoading } = useServerActionQuery(
     fetchReportsFromUserAction,
     {
       input: {
-        page_index: pageIndex,
+        page_index: page - 1,
         page_size: 10,
       },
-      queryKey: ['reports', pageIndex],
+      queryKey: ['reports', page],
     },
-  )
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams],
   )
 
   function handlePaginate(page: number) {
-    router.push(pathname + '?' + createQueryString('page', String(page + 1)))
+    setPage(page + 1)
   }
 
   return (
@@ -105,11 +87,18 @@ export function ReportsList() {
                 </TableCell>
               </TableRow>
             ))}
+            {reports?.data && reports.data.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center pt-24">
+                  No reports found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="p-2 sm:p-6">
-        {!!reports && (
+        {reports?.data && reports.data.length > 0 && (
           <Pagination
             pageIndex={reports.page}
             perPage={reports.size}
