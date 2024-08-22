@@ -33,6 +33,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       toast.error(error.err.data)
     },
     onSuccess: (result) => {
+      console.log('Resultado:', result)
       localStorage.setItem('access_token', result.data.access_token)
       toast.success('Account authenticated successfully')
       replace('/')
